@@ -10,26 +10,33 @@ export async function GET(request) {
         const page = parseInt(searchParams.get("page")) || 1;
         const limit = parseInt(searchParams.get("limit")) || 10;
         const category = searchParams.get("category");
-        const status = searchParams.get("status");
+        const status = searchParams.get("status") || "published";
         const tag = searchParams.get("tag");
         const search = searchParams.get("q");
+        const sort = searchParams.get("sort") || "recent"; // recent, views, featured
+        const featured = searchParams.get("featured") === "true";
 
-        const query = {};
+        const query = { status };
 
         if (category) query.category = category;
-        if (status) query.status = status;
         if (tag) query.tags = tag;
+        if (featured) query.is_featured = true;
         if (search) {
             query.$text = { $search: search };
         }
 
         const skip = (page - 1) * limit;
 
+        let sortObj = { published_at: -1 };
+        if (sort === "views") sortObj = { views: -1 };
+        if (sort === "featured") sortObj = { is_featured: -1, published_at: -1 };
+        if (search) sortObj = { score: { $meta: "textScore" } };
+
         const posts = await Post.find(query)
-            .sort({ createdAt: -1 })
+            .sort(sortObj)
             .skip(skip)
             .limit(limit)
-            .populate("author.id", "name avatar");
+            .select("title slug banner short_description category published_at views author.name read_time is_featured is_breaking");
 
         const total = await Post.countDocuments(query);
 
@@ -43,6 +50,7 @@ export async function GET(request) {
             },
         });
     } catch (error) {
+        console.error(error);
         return NextResponse.json(
             { error: "Failed to fetch posts" },
             { status: 500 }

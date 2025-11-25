@@ -1,65 +1,89 @@
-import Image from "next/image";
+import { Metadata } from "next";
+import Container from "@/components/ui/Container";
+import HeroSection from "@/components/HeroSection";
+import TrendingCarousel from "@/components/TrendingCarousel";
+import CategoryBlock from "@/components/CategoryBlock";
+import LatestNewsList from "@/components/LatestNewsList";
+import NewsletterBox from "@/components/NewsletterBox";
+import BreakingTicker from "@/components/BreakingTicker";
+
+export const metadata: Metadata = {
+  title: "KabutarMedia - Latest News, Breaking News & Videos",
+  description: "Get breaking news from India and around the world. Stay updated with the latest news on India, Politics, Business, Sports, Technology, and more.",
+  openGraph: {
+    title: "KabutarMedia - Latest News",
+    description: "Breaking news and latest updates from India and the world",
+    type: "website",
+  },
+};
+
+const categories = [
+  { name: "India", slug: "india" },
+  { name: "World", slug: "world" },
+  { name: "Politics", slug: "politics" },
+  { name: "Business", slug: "business" },
+  { name: "Sports", slug: "sports" },
+  { name: "Entertainment", slug: "entertainment" },
+  { name: "Technology", slug: "tech" },
+  { name: "Health", slug: "health" },
+];
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      {/* Breaking Ticker */}
+      <BreakingTicker />
+
+      <Container className="py-6 md:py-8">
+        {/* Hero Section - Featured Stories */}
+        <HeroSection />
+
+        {/* Trending Carousel */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-black mb-6 text-zinc-900 dark:text-white">🔥 Trending Now</h2>
+          <TrendingCarousel />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
+          {/* Left Content - 3 columns */}
+          <div className="lg:col-span-3">
+            {/* Latest News Header */}
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-1 h-8 bg-red-600"></div>
+              <h2 className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white\">Latest News</h2>
+            </div>
+
+            {/* News Grid */}
+            <LatestNewsList />
+          </div>
+
+          {/* Right Sidebar - 1 column */}
+          <div className="space-y-6">
+            {/* Newsletter Box */}
+            <div className="sticky top-20 space-y-6">
+              <NewsletterBox />
+              
+              {/* Sidebar Ad Space */}
+              <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-6 border-2 border-dashed border-zinc-300 dark:border-zinc-600 text-center">
+                <p className="text-sm text-gray-500 dark:text-gray-400">Advertisement</p>
+                <p className="text-xs text-gray-400 mt-2">300x250</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+      </Container>
+
+      {/* Category Sections - Full Width */}
+      <div className="bg-zinc-50 dark:bg-zinc-900 py-12 border-t border-zinc-200 dark:border-zinc-800">
+        <Container>
+          {categories.map((cat, idx) => (
+            <div key={cat.slug} className={idx > 0 ? 'mt-12 pt-12 border-t border-zinc-200 dark:border-zinc-800' : ''}>
+              <CategoryBlock categoryName={cat.name} slug={cat.slug} />
+            </div>
+          ))}
+        </Container>
+      </div>
+    </>
   );
 }
