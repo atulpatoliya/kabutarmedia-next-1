@@ -1,96 +1,128 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X, Search } from "lucide-react";
-import NavMenu from "./NavMenu";
+import { Menu, Search, X, Bell, User } from "lucide-react";
+import Container from "@/components/ui/Container";
 import MobileMenu from "./MobileMenu";
 
 export default function Header() {
-  const [open, setOpen] = useState(false);
-  const [searchActive, setSearchActive] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "India", href: "/category/india" },
+    { name: "World", href: "/category/world" },
+    { name: "Video", href: "/videos" },
+    { name: "Movie", href: "/category/entertainment" },
+    { name: "Tech", href: "/category/tech" },
+    { name: "Sports", href: "/category/sports" },
+    { name: "Business", href: "/category/business" },
+    { name: "Education", href: "/category/education" },
+    { name: "Astrology", href: "/category/astrology" },
+  ];
 
   return (
-    <>
-      {/* Top Bar */}
-      <div className="bg-zinc-900 text-white text-xs py-2 px-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span>Welcome to KabutarMedia</span>
-          <span className="hidden sm:inline">Premium News Portal</span>
-        </div>
+    <header className="flex flex-col w-full font-sans">
+      {/* Top Bar - Black */}
+      <div className="bg-black text-white text-xs py-1 hidden md:block">
+        <Container className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <span>{new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            <span className="text-gray-400">|</span>
+            <Link href="#" className="hover:text-red-500 transition-colors">Hindi</Link>
+            <Link href="#" className="hover:text-red-500 transition-colors">English</Link>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="#" className="hover:text-red-500">App Download</Link>
+            <div className="flex gap-2">
+              {/* Social Icons placeholders */}
+              <div className="w-4 h-4 bg-gray-600 rounded-full"></div>
+              <div className="w-4 h-4 bg-gray-600 rounded-full"></div>
+              <div className="w-4 h-4 bg-gray-600 rounded-full"></div>
+            </div>
+          </div>
+        </Container>
       </div>
 
-      {/* Main Header */}
-      <header className="sticky top-0 z-40 bg-white dark:bg-zinc-800 border-b-2 border-red-600 shadow-md">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Header Row: Logo + Search + Actions */}
-          <div className="flex items-center justify-between py-3">
-            {/* Logo & Branding */}
-            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg">
-                K
-              </div>
-              <div className="hidden sm:flex flex-col">
-                <span className="text-xl font-black text-red-600">KabutarMedia</span>
-                <span className="text-xs text-gray-500">Breaking News</span>
+      {/* Main Header - White */}
+      <div className="bg-white py-4 border-b border-gray-100">
+        <Container className="flex justify-between items-center h-[90px]">
+          {/* Logo Section */}
+          <div className="flex items-center gap-4">
+            <button
+              className="md:hidden p-2"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <Link href="/" className="flex items-center gap-2">
+              <div className="bg-black text-white p-2 font-bold text-3xl tracking-tighter">
+                AAJ<span className="text-red-600">TAK</span>
               </div>
             </Link>
+          </div>
 
-            {/* Search Bar */}
-            <div className="hidden md:flex flex-1 max-w-xs mx-8">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search news..."
-                  className="w-full px-4 py-2 rounded-full bg-gray-100 dark:bg-zinc-700 text-sm border border-gray-300 dark:border-zinc-600 focus:outline-none focus:ring-2 focus:ring-red-600"
-                />
-                <Search className="absolute right-3 top-2.5 w-4 h-4 text-gray-500" />
-              </div>
-            </div>
-
-            {/* Right Actions */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setSearchActive(!searchActive)}
-                className="md:hidden text-gray-600 hover:text-red-600 dark:hover:text-red-500 transition-colors"
-              >
-                <Search className="w-5 h-5" />
-              </button>
-              <button className="hidden sm:inline px-4 py-2 bg-red-600 text-white rounded-full text-xs font-bold hover:bg-red-700 transition-colors">
-                LIVE TV
-              </button>
-              <button
-                onClick={() => setOpen(!open)}
-                className="md:hidden text-gray-600 hover:text-red-600 dark:hover:text-red-500 transition-colors"
-              >
-                {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
+          {/* Ad Placeholder / Search */}
+          <div className="hidden md:flex items-center gap-6">
+            <div className="w-[728px] h-[90px] bg-gray-50 flex items-center justify-center text-gray-400 text-sm border border-dashed border-gray-200">
+              Advertisement (728x90)
             </div>
           </div>
 
-          {/* Mobile Search */}
-          {searchActive && (
-            <div className="md:hidden pb-3">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search news..."
-                  autoFocus
-                  className="w-full px-4 py-2 rounded-full bg-gray-100 dark:bg-zinc-700 text-sm border border-gray-300 dark:border-zinc-600 focus:outline-none focus:ring-2 focus:ring-red-600"
-                />
-                <Search className="absolute right-3 top-2.5 w-4 h-4 text-gray-500" />
-              </div>
+          {/* Mobile Actions */}
+          <div className="flex md:hidden items-center gap-3">
+            <Search className="w-5 h-5" />
+            <Bell className="w-5 h-5" />
+          </div>
+        </Container>
+      </div>
+
+      {/* Navigation Bar - Red (Sticky) */}
+      <div className={`bg-aajtak-red text-white transition-all duration-300 z-50 ${isScrolled ? 'fixed top-0 left-0 right-0 shadow-md' : 'relative'}`}>
+        <Container>
+          <nav className="flex items-center justify-between h-[50px]">
+            <ul className="flex items-center gap-8 overflow-x-auto no-scrollbar h-full whitespace-nowrap text-sm font-bold">
+              <li className="flex items-center h-full">
+                <Link href="/" className="hover:bg-red-700 px-2 h-full flex items-center">Home</Link>
+              </li>
+              {navLinks.map((link) => (
+                <li key={link.name} className="flex items-center h-full">
+                  <Link href={link.href} className="hover:bg-red-700 px-2 h-full flex items-center uppercase tracking-wide">
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="hidden md:flex items-center gap-4 pl-4 border-l border-red-400 h-3/5 my-auto">
+              <button className="hover:bg-red-700 p-2 rounded-full">
+                <Search className="w-4 h-4" />
+              </button>
+              <button className="flex items-center gap-2 bg-white text-red-600 px-4 py-1 rounded-full text-xs font-bold hover:bg-gray-100">
+                <User className="w-3 h-3" />
+                Login
+              </button>
             </div>
-          )}
+          </nav>
+        </Container>
+      </div>
 
-          {/* Navigation Menu */}
-          <NavMenu />
-        </div>
-      </header>
-
-      {/* Mobile Menu */}
-      {open && <MobileMenu open={open} onClose={() => setOpen(false)} />}
-    </>
+      {/* Mobile Menu Overlay */}
+      <MobileMenu
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        links={navLinks}
+      />
+    </header>
   );
 }
-
